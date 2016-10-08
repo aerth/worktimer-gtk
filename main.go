@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aerthlib/filer"
+	"github.com/aerth/filer"
 	"github.com/mattn/go-gtk/gdk"
 	"github.com/mattn/go-gtk/glib"
 	"github.com/mattn/go-gtk/gtk"
