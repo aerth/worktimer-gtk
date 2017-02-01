@@ -17,7 +17,10 @@ import (
 	"github.com/mattn/go-gtk/gtk"
 )
 
-const titlestr = "Work Mode"
+var titlestr = breakmode
+
+const breakmode = "Break Mode"
+const workmode = "Work Mode"
 
 var filename string
 var (
@@ -148,6 +151,7 @@ func iconlaunch() {
 			if !working {
 				fmt.Printf("Not working. Stopped at %s, counting %s.\n", start, total)
 			} else {
+
 				fmt.Printf("Worked from %s to %s, counting %s.\n", start, finish, total)
 			}
 			//filer.Append(filename, []byte(fmt.Sprintf("Worked from %s to %s, counting %s.\n", start, finish, total)))
@@ -173,6 +177,10 @@ func iconlaunch() {
 		quitBtn.SetVisible(false)
 		breaklabel.SetVisible(false)
 		startedlabel.SetVisible(true)
+		titlestr = workmode
+		icon.SetTooltipMarkup(fmt.Sprintf("<span color='green'>%s</span>", titlestr))
+		glib.SetApplicationName(titlestr)
+
 		remenu.ModifyBG(gtk.STATE_NORMAL, g)
 
 		clockin()
@@ -185,6 +193,9 @@ func iconlaunch() {
 		quitBtn.SetVisible(true)
 		breaklabel.SetVisible(true)
 		startedlabel.SetVisible(false)
+		titlestr = breakmode
+		icon.SetTooltipMarkup(fmt.Sprintf("<span color='red'>%s</span>", titlestr))
+		glib.SetApplicationName(titlestr)
 		remenu.ModifyBG(gtk.STATE_NORMAL, r)
 
 		clockout()
@@ -206,7 +217,11 @@ func iconlaunch() {
 			time.Sleep(1 * time.Second)
 			gdk.ThreadsEnter()
 			remenu.SetTooltipText(time.Now().Sub(start).String())
-			icon.SetTooltipMarkup(fmt.Sprintf("<span color='green'>%s</span> %s", titlestr, time.Now().Sub(start).String()))
+			if !working {
+				icon.SetTooltipMarkup(fmt.Sprintf("<span color='red'>%s</span> %s", titlestr, time.Now().Sub(start).String()))
+			} else {
+				icon.SetTooltipMarkup(fmt.Sprintf("<span color='green'>%s</span> %s", titlestr, time.Now().Sub(start).String()))
+			}
 			gdk.ThreadsLeave()
 		}
 	}()
