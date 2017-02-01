@@ -17,7 +17,7 @@ import (
 	"github.com/mattn/go-gtk/gtk"
 )
 
-var titlestr = breakmode
+var titlestr = workmode
 
 const breakmode = "Break Mode"
 const workmode = "Work Mode"
@@ -30,6 +30,7 @@ var (
 	icon         = flag.Bool("icon", false, "Punch in and launch icon.")
 	decode       = flag.Bool("decode", false, "Just print total hours and exit. Need -in flag.")
 )
+var working bool
 
 func init() {
 	flag.StringVar(&filename, "o", "", "Save to file")
@@ -37,7 +38,6 @@ func init() {
 }
 
 var start time.Time
-var working = true
 
 // PunchIn is a duration of work, or a start time. Or a finish time.
 // To save bytes in the Marshal
@@ -136,6 +136,7 @@ func main() {
 }
 
 func iconlaunch() {
+	working = true
 	glib.ThreadInit(nil)
 	gdk.ThreadsInit()
 	gdk.ThreadsEnter()
