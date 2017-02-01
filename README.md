@@ -2,4 +2,12 @@
 
 Status Icon timer with json output.
 
-Also decodes the json and adds up the hours.
+Decodes saved json and adds up the hours.
+
+### Debian Installation
+
+```
+sudo apt-get install pango1.0-dev libgdk-pixbuf2.0-dev
+go get -v -u github.com/aerth/worktimer-gtk
+sudo mv $GOPATH/bin/worktimer-gtk /usr/local/bin/
+```
