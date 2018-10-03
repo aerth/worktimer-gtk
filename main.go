@@ -88,11 +88,13 @@ func clockout() {
 	// save to punchcard
 	b, err := json.Marshal(&punch)
 	if err != nil {
-		panic(err)
+		println("bad:", err.Error())
+		return
 	}
 	err = filer.Append(filename, append(b, []byte("\n")...)) // !!!
 	if err != nil {
-		panic(err)
+		println("bad:", err.Error())
+		return
 	}
 
 	fmt.Printf("Worked from %s to %s, total of %s.\n", punch.Started, punch.Finished, punch.Duration)
@@ -180,8 +182,6 @@ func iconlaunch() {
 		startedlabel.SetVisible(true)
 		titlestr = workmode
 		icon.SetTooltipMarkup(fmt.Sprintf("<span color='green'>%s</span>", titlestr))
-		glib.SetApplicationName(titlestr)
-
 		remenu.ModifyBG(gtk.STATE_NORMAL, g)
 
 		clockin()
@@ -196,7 +196,6 @@ func iconlaunch() {
 		startedlabel.SetVisible(false)
 		titlestr = breakmode
 		icon.SetTooltipMarkup(fmt.Sprintf("<span color='red'>%s</span>", titlestr))
-		glib.SetApplicationName(titlestr)
 		remenu.ModifyBG(gtk.STATE_NORMAL, r)
 
 		clockout()
@@ -215,15 +214,15 @@ func iconlaunch() {
 	icon.SetTooltipMarkup(fmt.Sprintf("<span color='green'>%s</span>", titlestr))
 	go func() {
 		for {
-			time.Sleep(1 * time.Second)
-			gdk.ThreadsEnter()
-			remenu.SetTooltipText(time.Now().Sub(start).String())
+			<-time.After(time.Second)
+			//gdk.ThreadsEnter()
+			//remenu.SetTooltipText(time.Now().Sub(start).String())
 			if !working {
 				icon.SetTooltipMarkup(fmt.Sprintf("<span color='red'>%s</span> %s", titlestr, time.Now().Sub(start).String()))
 			} else {
 				icon.SetTooltipMarkup(fmt.Sprintf("<span color='green'>%s</span> %s", titlestr, time.Now().Sub(start).String()))
 			}
-			gdk.ThreadsLeave()
+			//gdk.ThreadsLeave()
 		}
 	}()
 	icon.Connect("popup-menu", func(cbx *glib.CallbackContext) {
